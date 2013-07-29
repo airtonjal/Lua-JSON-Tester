@@ -13,24 +13,30 @@ local function showUsageAndExit(err)
   
     [OPTIONS]:
     
-        --mode=<mode>     Mode to send JSON. Either "POST", "GET" for the equivalent HTTP methods
-                          Use "URL" to send as a parameter on the url or "COOKIE" to send as a cookie]]
+        --mode=<mode>     Mode to send JSON. This can be any HTTP method (POST, GET, PUT, DELETE).
+                          Use "URL" to send as a parameter on the URL query string or "COOKIE" to send as a cookie.
+                          If you use URL or COOKIE the name parameter MUST be set
+                     
+        --name=<name>     If the mode is URL this indicates the URL query string ]]
   print (msg)
   os.exit(1)
 end
+
+debug("\n  ..... Starting arguments parsing .....")
 
 if (#arg == 0) then
   showUsageAndExit( "Missing arguments" )
 end
 
-status, jsonTable, jsonStr = pcall(dofile, arg[1])
+status, url, jsonTable, jsonStr = pcall(dofile, arg[1])
 
--- If an error wais raised, it will be placed on the jsonTable variable
+-- If an error wais raised, it will be placed on the url variable
 if not status then
-  showUsageAndExit(jsonTable)
+  showUsageAndExit(url)
 end
 
-debug("\n  JSON data file:", "\n\n\t" .. arg[1] .. "\n")
+debug("\n  JSON data file:", "\n\t" .. arg[1] )
+debug("  URL:\n\t" .. url)
 
 flags = {}  -- Command line flags
 args = {}   -- key/value arguments
@@ -47,17 +53,27 @@ for i = 2, #arg, 1 do
   end
 end
 
-debug("  Flags:") 
-for _, flag in ipairs(flags) do
-  debug("\t" .. flag)
+if #flags > 0 then 
+  debug("  Flags:")
+  for _, flag in ipairs(flags) do debug("\t" .. flag) end
+  debug("")
 end
-debug("")
 
 for var, val in pairs(args) do
-  debug("  " .. var .. ":\n\n\t" .. val .. "\n")
+  debug("  " .. var .. ":\n\t" .. val )
 end
 
 if not args.mode then
-  debug("  No mode found, using default one " .. DEFAULT_MODE)
+  debug("  [INFO] No mode found, using default one " .. DEFAULT_MODE .. "\n")
+  args.mode = DEFAULT_MODE
+elseif args.mode == "URL" then
+  if args.name then
+    args.query_string = args.name
+    debug("  query_string" .. ":\n\t" .. args.query_string )
+  else
+    showUsageAndExit("  [ERROR]\tSpecified mode is URL but no name parameter was found on the arguments list\n")
+  end
 end
+
+debug("\n  ..... Finishing arguments parsing .....\n")
 

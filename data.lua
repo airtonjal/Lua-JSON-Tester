@@ -1,4 +1,6 @@
-return {
+return "http://validate.jsontest.com/",
+
+{
   message = "Something good happened on the server!",
   success = true,
   data = { 
@@ -10,6 +12,7 @@ return {
     }
   }
 },
+
 [[
 {
   "message": "Something good happened on the server!", 

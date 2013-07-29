@@ -9,3 +9,6 @@ Config:
 Dependencies:
   - Install JSON4Lua http://json.luaforge.net/ (I recommend using LuaRocks)
   - Curl
+
+Tips:
+  - If you are having problems using the tool, try setting the DEBUG flag to true on the config.lua file
