@@ -7,13 +7,27 @@ end
 local function showUsageAndExit(err)
   local msg = err or ""
   msg = msg .. "\n" .. [[
-  Correct usage: lua ]] .. arg[0] .. [[ LUA_FILE_PATH]]
+  Correct usage: lua LUA_FILE [OPTIONS]
+    
+    [LUA_FILE] Any Lua file that returns a JSON either as a string or as a Lua table.
+  
+    [OPTIONS]:
+    
+        --mode=<mode>     Mode to send JSON. Either "POST", "GET" for the equivalent HTTP methods
+                          Use "URL" to send as a parameter on the url or "COOKIE" to send as a cookie]]
   print (msg)
   os.exit(1)
 end
 
 if (#arg == 0) then
   showUsageAndExit( "Missing arguments" )
+end
+
+status, jsonTable, jsonStr = pcall(dofile, arg[1])
+
+-- If an error wais raised, it will be placed on the jsonTable variable
+if not status then
+  showUsageAndExit(jsonTable)
 end
 
 debug("\n  JSON data file:", "\n\n\t" .. arg[1] .. "\n")
@@ -43,10 +57,7 @@ for var, val in pairs(args) do
   debug("  " .. var .. ":\n\n\t" .. val .. "\n")
 end
 
-status, jsonTable, jsonStr = pcall(dofile, arg[1])
-
--- If an error wais raised, it will be placed on the jsonTable variable
-if not status then
-  showUsageAndExit(jsonTable)
+if not args.mode then
+  debug("  No mode found, using default one " .. DEFAULT_MODE)
 end
 

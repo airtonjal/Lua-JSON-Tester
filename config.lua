@@ -1,1 +1,2 @@
 DEBUG = true
+DEFAULT_MODE = "POST"
