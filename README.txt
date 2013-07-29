@@ -4,8 +4,8 @@ Lua-JSON-Tester
 A tool developed in Lua to test web applications that rely on the JSON standard
 
 Config:
-  - Add "?.lua" to your LUA\_PATH
+  - Add the Lua JSON Tester to your LUA_PATH
 
 Dependencies:
-  - JSON4Lua http://json.luaforge.net/
+  - Install JSON4Lua http://json.luaforge.net/ (I recommend using LuaRocks)
   - Curl
