@@ -1,4 +1,5 @@
-return "http://validate.jsontest.com/",
+return "http://headers.jsontest.com/",
+
 
 {
   message = "Something good happened on the server!",

@@ -28,7 +28,7 @@ if (#arg == 0) then
   showUsageAndExit( "Missing arguments" )
 end
 
-status, url, jsonTable, jsonStr = pcall(dofile, arg[1])
+status, url, jsonData = pcall(dofile, arg[1])
 
 -- If an error wais raised, it will be placed on the url variable
 if not status then
@@ -71,7 +71,7 @@ elseif args.mode == "URL" then
     args.query_string = args.name
     debug("  query_string" .. ":\n\t" .. args.query_string )
   else
-    showUsageAndExit("  [ERROR]\tSpecified mode is URL but no name parameter was found on the arguments list\n")
+    showUsageAndExit("\n  [ERROR]\tSpecified mode is URL but no name parameter was found on the arguments list\n")
   end
 end
 
