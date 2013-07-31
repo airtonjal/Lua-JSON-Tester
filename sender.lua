@@ -8,19 +8,24 @@ if type(jsonData) == "table" then
 end
 
 --local curl = [[curl -i -H 'Accept: application/json']] 
-local curl = [[curl -i -H 'Content-type: application/json']] 
+--local curl = [[curl -i -H 'Content-type: application/json']] 
+local curl = "curl -i %s -H Accept:application/json -H Content-Type:application/json -d '%s' '%s'"
 
+local modeCmd
 if (args.mode ~= "URL" and args.mode ~= "COOKIE") then
-  curl = curl .. " -X " .. args.mode
-end
-
-
-if (args.mode == "URL") then
-  curl = curl .. "?" .. args.query_string .. "=" .. jsonData--:gsub("^%s*(.-)%s*$", "%1") )
+  modeCmd = "-X " .. args.mode
 else
-  curl = curl .. " -d \'" .. jsonData .. "\'"
+  modeCmd = ""
 end
-curl = curl .. " " .. url
+
+curl = curl:format(modeCmd, json.encode(jsonData), url)
+
+--if (args.mode == "URL") then
+--  curl = curl .. "?" .. args.query_string .. "=" .. jsonData--:gsub("^%s*(.-)%s*$", "%1") )
+--else
+--curl = curl:format(json.encode(jsonData))
+--end
+--curl = curl .. " " .. url
 
 print("\n", curl, "\n")
 
