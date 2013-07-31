@@ -1,6 +1,5 @@
 return "http://headers.jsontest.com/",
 
-
 {
   message = "Something good happened on the server!",
   success = true,
