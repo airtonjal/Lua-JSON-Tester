@@ -9,7 +9,7 @@ end
 
 --local curl = [[curl -i -H 'Accept: application/json']] 
 --local curl = [[curl -i -H 'Content-type: application/json']] 
-local curl = "curl -i %s -H Accept:application/json -H Content-Type:application/json -d '%s' '%s'"
+local curl = "curl -i %s -H \'Accept:application/json\' -H \'Content-Type:application/json\' "
 
 local modeCmd
 if (args.mode ~= "URL" and args.mode ~= "COOKIE") then
@@ -18,7 +18,8 @@ else
   modeCmd = ""
 end
 
-curl = curl:format(modeCmd, json.encode(jsonData), url)
+curl = curl:format(modeCmd)
+curl = curl .. " -d " .. json.encode(jsonData) .. " \'" .. url .. "\'"
 
 --if (args.mode == "URL") then
 --  curl = curl .. "?" .. args.query_string .. "=" .. jsonData--:gsub("^%s*(.-)%s*$", "%1") )
