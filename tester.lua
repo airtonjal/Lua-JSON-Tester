@@ -1,8 +1,11 @@
-return nil, [[
-{
-  "Accept-Language": "en-US,en;q=0.8",
-  "Host": "headers.jsontest.com",
-  "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3",
-  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-}
-]]
+require "senderFunction"
+
+status, url, jsonData = pcall(dofile, "post.lua")
+
+-- If an error wais raised, it will be placed on the url variable
+if not status then
+  error("Could not load post.lua")
+end
+
+request(jsonData, url, "POST")
+
