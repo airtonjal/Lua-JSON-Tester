@@ -27,22 +27,17 @@ end
 
 
 
-function request(jsonData, url, mode)
+function request(jsonData, url, mode, output)
   if url == nil then
     error("\'url\' parameter cannot be nil")
   end
-  
+    
   mode = mode or "POST"
+  output = output or "json"
   
-  if (mode ~= "GET") then
-    if type(jsonData) ~= "table" then
-      error("\'jsonData\' parameter must be a table")
-    end
-  end
+  local curl = "curl -k -i -X %s -H \'Accept:application/" .. output .. "\' -H \'Content-Type:application/json\' "
 
-  local curl = "curl -i -X %s -H \'Accept:application/json\' -H \'Content-Type:application/json\' "
-
-  curl = curl:format(mode)
+  curl = curl:format(mode)  
   curl = curl .. " -d \'" .. json.encode(jsonData) .. "\' \'" .. url .. "\'"
 
   print("\n", curl, "\n")

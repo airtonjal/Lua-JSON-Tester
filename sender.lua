@@ -9,7 +9,7 @@ end
 
 --local curl = [[curl -i -H 'Accept: application/json']] 
 --local curl = [[curl -i -H 'Content-type: application/json']] 
-local curl = "curl -i %s -H \'Accept:application/json\' -H \'Content-Type:application/json\' "
+local curl = "curl -k -i %s -H \'Accept:application/json\' -H \'Content-Type:application/json\' "
 
 local modeCmd
 if (args.mode ~= "URL" and args.mode ~= "COOKIE") then
@@ -31,4 +31,4 @@ curl = curl .. " -d " .. json.encode(jsonData) .. " \'" .. url .. "\'"
 print("\n", curl, "\n")
 
 os.execute(curl)
-
+print()
