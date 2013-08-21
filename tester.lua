@@ -10,11 +10,12 @@ local printBody = function(serviceName)
 end
 local printInfo = function(serviceName) print("\n\n") printHead() printBody(serviceName) printTail() end
 
-local serverURL = "https://localhost:44301/Service/Calculator.svc"
-serverURL = serverURL .. "/%s"
+--local serverURL = "https://localhost:44301/Service/Calculator.svc/%s"
+
+local serverURL = "localhost"
 
 -- Request table. Each key is a method name and each value is the object to convert to json data on the POST request
-local requests = {
+local posts = {
   Add       = { N1 = 4867, N2 = 867  },
   Subtract  = { N1 = 984,  N2 = 5948 },
   Multiply  = { N1 = 42,   N2 = 750  },
@@ -22,9 +23,24 @@ local requests = {
   Fibonacci = 25
 }
 
-for service, data in pairs(requests) do
-  printInfo("Testing " .. service:upper() .. " service")
-  request(data, string.format(serverURL, service), "POST", "xml")
-end
-print()
+local gets = {
+  "GetName"
+}
 
+local path = "Service/Calculator.svc/%s"
+-- Invoke services with POST requests
+for service, data in pairs(posts) do
+  printInfo("Testing " .. service:upper() .. " service")
+  request(serverURL, 4430,  PROTOCOLS.HTTP,  METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
+  request(serverURL, 44301, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
+--  request(string.format(serverURL, service), 44301, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, service, CONTENTS.JSON, data)
+end
+
+-- Invoke services with GET requests
+for _, service in ipairs(gets) do
+--  printInfo("Testing " .. service:upper() .. " service")
+  request(serverURL, 4430,  PROTOCOLS.HTTP,  METHOD.GET, CONTENTS.JSON, path:format(service))
+  request(serverURL, 44301, PROTOCOLS.HTTPS, METHOD.GET, CONTENTS.JSON, path:format(service))
+end
+
+print()
