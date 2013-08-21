@@ -30,7 +30,7 @@ local function formatURL(url, port, protocol, path)
   return urlTemplate:format(protocol, url, port, path)
 end
 
-function request(url, port, protocol, method, outputFormat, path, inputFormat, data)
+function request(url, port, protocol, method, outputFormat, path, inputFormat, data, time)
   if (url == nil) then
     error("\'url\' parameter cannot be nil")
   end
@@ -55,10 +55,21 @@ function request(url, port, protocol, method, outputFormat, path, inputFormat, d
     curl = curl .. " -d \'" .. body .. "\' \'" .. url .. "\'"
   end
 
+  if (time) then curl = "time " .. curl end
 
   print("\n", curl, "\n")
 
   os.execute(curl)
+  --print(a)
+  --[[local res, err = io.popen(curl, 'r')
+  if (err) then
+    error(err)
+    os.exit(1)
+  else
+    local output = res:read('*a')
+    res:close()
+    --print(output)
+  end]]--
 end
 
 function encodeData(data, contents)
@@ -66,7 +77,17 @@ function encodeData(data, contents)
   elseif (contents == CONTENTS.XML) then
     error("XML input format not yet supported")
   elseif (contents == CONTENTS.JSON) then
-    return json.encode(data)
+    -- TODO: Temporary solution, assuming that server will receive only one parameter
+    for k, v in pairs(data) do
+      return json.encode(v)
+    end
+  elseif (contents == CONTENTS.QUERY) then
+    local queryString = ""
+    for k, v in pairs(data) do
+      queryString = k .. "=" .. json.encode(v) .. "&"
+    end
+    -- Removes trailing '&' char
+    return queryString:sub(1, queryString:len() - 1)
   else
     error("Parameter \"contents\" not recognized")
   end

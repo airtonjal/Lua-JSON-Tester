@@ -16,11 +16,12 @@ local serverURL = "localhost"
 
 -- Request table. Each key is a method name and each value is the object to convert to json data on the POST request
 local posts = {
-  Add       = { N1 = 4867, N2 = 867  },
-  Subtract  = { N1 = 984,  N2 = 5948 },
-  Multiply  = { N1 = 42,   N2 = 750  },
-  Divide    = { N1 = 43,   N2 = 564  },
-  Fibonacci = 25
+-- SERVICE      PARAMETER           REQUEST DATA
+  Add       = {   pair =      { N1 = 4867, N2 = 867  } },
+  Subtract  = {   pair =      { N1 = 984,  N2 = 5948 } },
+  Multiply  = {   pair =      { N1 = 42,   N2 = 750  } },
+  Divide    = {   pair =      { N1 = 43,   N2 = 564  } },
+  Fibonacci = {   n    =                 25            }
 }
 
 local gets = {
@@ -30,17 +31,18 @@ local gets = {
 local path = "Service/Calculator.svc/%s"
 -- Invoke services with POST requests
 for service, data in pairs(posts) do
-  printInfo("Testing " .. service:upper() .. " service")
-  request(serverURL, 4430,  PROTOCOLS.HTTP,  METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
-  request(serverURL, 44301, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
---  request(string.format(serverURL, service), 44301, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, service, CONTENTS.JSON, data)
+  printInfo("Testing " .. service:upper() .. " service with HTTP")
+  request(serverURL, 4430,  PROTOCOLS.HTTP,  METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.QUERY, data)
+  printInfo("Testing " .. service:upper() .. " service with HTTPS")
+  request(serverURL, 44301, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.QUERY, data)
 end
 
 -- Invoke services with GET requests
-for _, service in ipairs(gets) do
---  printInfo("Testing " .. service:upper() .. " service")
-  request(serverURL, 4430,  PROTOCOLS.HTTP,  METHOD.GET, CONTENTS.JSON, path:format(service))
-  request(serverURL, 44301, PROTOCOLS.HTTPS, METHOD.GET, CONTENTS.JSON, path:format(service))
-end
+--[[for _, service in ipairs(gets) do
+  printInfo("Testing " .. service:upper() .. " service with HTTP")
+  request(serverURL, 4430,  PROTOCOLS.HTTP,  METHOD.GET, CONTENTS.JSON, path:format(service))--, nil, nil, true)
+  printInfo("Testing " .. service:upper() .. " service with HTTPS")
+  request(serverURL, 44301, PROTOCOLS.HTTPS, METHOD.GET, CONTENTS.JSON, path:format(service))--, nil, nil, true)
+end]]--
 
 print()
