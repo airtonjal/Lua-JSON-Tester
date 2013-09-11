@@ -60,16 +60,6 @@ function request(url, port, protocol, method, outputFormat, path, inputFormat, d
   print("\n", curl, "\n")
 
   os.execute(curl)
-  --print(a)
-  --[[local res, err = io.popen(curl, 'r')
-  if (err) then
-    error(err)
-    os.exit(1)
-  else
-    local output = res:read('*a')
-    res:close()
-    --print(output)
-  end]]--
 end
 
 function encodeData(data, contents)
@@ -78,13 +68,14 @@ function encodeData(data, contents)
     error("XML input format not yet supported")
   elseif (contents == CONTENTS.JSON) then
     -- TODO: Temporary solution, assuming that server will receive only one parameter
-    for k, v in pairs(data) do
-      return json.encode(v)
-    end
+    --for k, v in pairs(data) do
+    --  return json.encode(v)
+    --end
+    return json.encode(data)
   elseif (contents == CONTENTS.QUERY) then
     local queryString = ""
     for k, v in pairs(data) do
-      queryString = k .. "=" .. json.encode(v) .. "&"
+      queryString = queryString .. k .. "=" .. v .. "&"
     end
     -- Removes trailing '&' char
     return queryString:sub(1, queryString:len() - 1)
