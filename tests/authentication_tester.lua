@@ -1,7 +1,6 @@
+require "config"
 require "senderFunction"
 require "utils"
-
-local serverAddress = "localhost"
 
 -- Request table. Each key is a method name and each value is the object to convert to json data on the POST request
 local posts = {
@@ -11,7 +10,7 @@ local posts = {
   --Login = {  User = "quality_1", Password = "qubit2600"  },
 }
 
-local path = "Service/Impl/Authentication.svc/%s"
+local path = "WFS/Service/Impl/Authentication.svc/%s"
 
 function test()
   -- Invoke services with POST requests
@@ -19,7 +18,7 @@ function test()
   --  printInfo("Testing " .. service:upper() .. " service with HTTP")
   --  request(serverAddress, 4430,  PROTOCOLS.HTTP,  METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
     printInfo("Testing " .. service:upper() .. " service with HTTPS")
-    request(serverAddress, 44301, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
+    requestAndPrint(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
   end
 end
 

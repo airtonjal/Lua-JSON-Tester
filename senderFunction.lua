@@ -3,26 +3,19 @@ local json = require "json"
 --require "args"
 
 METHOD = {
-  POST = "POST",
-  GET = "GET",
-  PUT = "PUT",
-  DELETE = "DELETE"
+  POST = "POST",    GET = "GET",     PUT = "PUT",   DELETE = "DELETE"
 }
 
 CONTENTS = {
-  JSON = "json",
-  XML  = "xml",
-  QUERY = "x-www-form-urlencoded"
+  JSON = "json",    XML  = "xml",    QUERY = "x-www-form-urlencoded"
 }
 
 PROTOCOLS = {
-  HTTP  = "http",
-  HTTPS = "https"
+  HTTP  = "http",   HTTPS = "https"
 }
 
 DEFAULT_PORTS = {
-  http  = 80, 
-  https = 443
+  http  = 80,       https = 443
 }
 
 local function formatURL(url, port, protocol, path)
@@ -30,7 +23,45 @@ local function formatURL(url, port, protocol, path)
   return urlTemplate:format(protocol, url, port, path)
 end
 
-function request(url, port, protocol, method, outputFormat, path, inputFormat, data, time)
+function requestJSON(url, port, protocol, method, path, data)
+  if (url == nil) then
+    error("\'url\' parameter cannot be nil")
+  end
+    
+  -- Default function values
+  method       = method       or METHOD.POST
+  inputFormat  = CONTENTS.JSON
+  outputFormat = CONTENTS.JSON
+  protocol     = protocol     or PROTOCOLS.HTTP
+  port         = port         or DEFAULT_PORTS[protocol]
+
+  local body = encodeData(data, inputFormat)
+  
+  local curl = "curl -k -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
+  curl = curl:format(method, outputFormat, inputFormat)
+ 
+  url = formatURL(url, port, protocol, path)
+
+  if (method == "GET") then
+    curl = curl .. " \'" .. url .. "\'"
+  else
+    curl = curl .. " -d \'" .. body .. "\' \'" .. url .. "\'"
+  end
+
+  curl = curl .. " 2>&1"
+
+  --print("\n", curl, "\n")
+  local handle = io.popen(curl)
+  local result = handle:read("*a")  
+  local split = splitLines(result)
+  handle:close()
+ 
+  -- Json contents is in the last line
+  local lastLine = split[#split] 
+  return json.decode(lastLine), lastLine
+end
+
+function requestAndPrint(url, port, protocol, method, outputFormat, path, inputFormat, data, time)
   if (url == nil) then
     error("\'url\' parameter cannot be nil")
   end
