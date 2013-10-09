@@ -3,6 +3,9 @@ require "senderFunction"
 require "utils"
 require "unityTest"
 
+-- Just a syntatic sugar
+local POST = METHOD.POST
+
 local UserNotEnabledError = { ErrorName = "UserNotEnabledError", ErrorCode = 101 }
 local AuthenticationError = { ErrorName = "AuthenticationError", ErrorCode = 102 }
 local InvalidTokenError   = { ErrorName = "InvalidTokenError"  , ErrorCode = 103 }
@@ -40,12 +43,12 @@ end
 
 --[[ This test should receive an exception from the server ]]--
 function testWrongLogin(data, err)
-  local resultData, resultStr = requestJSON(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, path:format("Login"), data, true)
-  local test = checkError(resultData, err.ErrorCode, err.ErrorName)
+  local resultData, resultStr = postJSON(path:format("Login"), data)
+  local test = checkError(resultData, err)
 end
 
 function testFineLogin(data)
-  local resultData, resultStr = requestJSON(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, path:format("Login"), data, true)
+  local resultData, resultStr = postJSON(path:format("Login"), data)
   
   assertType(resultData, "table")
 
@@ -59,33 +62,51 @@ function testFineLogin(data)
 end
 
 function testGetUserProfile()
-  local resultData, resultStr = requestJSON(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, path:format("GetUserProfile"), token, true)
+  local resultData, resultStr = postJSON(path:format("GetUserProfile"), token)
   assertType(resultData, "table")
   checkDefaultProfile(resultData)
 end
 
+function testRenewToken()
+  local resultData, resultStr = postJSON(path:format("RenewToken"), token)
+  
+  checkToken(resultData)
+  
+  -- Sending an invalid token to be renewed
+  resultData, resultStr = postJSON(path:format("RenewToken"), "cadcadcadvavad")
+  checkError(resultData, InvalidTokenError)
+end
+
+
 function testInvalidateToken()
-  local resultData, resultStr = requestJSON(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, path:format("InvalidateToken"), token, true)
+  local resultData, resultStr = postJSON(path:format("InvalidateToken"), token)
   
   assertType(resultData, "boolean")
   assertEquals(resultData, true)
 end
 
 function testInvalidToken()
-  local resultData, resultStr = requestJSON(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, path:format("GetUserProfile"), token, true)
-  checkError(resultData, InvalidTokenError.ErrorCode, InvalidTokenError.ErrorName)
+  local resultData, resultStr = postJSON(path:format("GetUserProfile"), token)
+  checkError(resultData, InvalidTokenError)
+  
+  resultData, resultStr = postJSON(path:format("InvalidateToken"), token)
+  checkError(resultData, InvalidTokenError)
+
+  resultData, resultStr = postJSON(path:format("RenewToken"), token)
+  checkError(resultData, InvalidTokenError)
 end
 
 for i = 1, arg[1] or 1 do
   local wrongPass = { User = "quality_1",    Password = "qubit26000" } 
-  local wrongUser = { User = "quality_1aaa", Password = "qubit2600" } 
-  local fineLogin = { User = "quality_1",    Password = "qubit2600" }
+  local wrongUser = { User = "quality_1aaa", Password = "qubit2600"  } 
+  local fineLogin = { User = "quality_1",    Password = "qubit2600"  }
   
   print()
-  test(testWrongLogin     , "Test wrong password"  , wrongPass, AuthenticationError)
-  test(testWrongLogin     , "Test wrong username"  , wrongUser, AuthenticationError)
-  test(testFineLogin      , "Test fine login"      , fineLogin)
-  test(testGetUserProfile , "Test user profile"    , fineLogin)
+  test(testWrongLogin     , "Test wrong password", wrongPass, AuthenticationError)
+  test(testWrongLogin     , "Test wrong username", wrongUser, AuthenticationError)
+  test(testFineLogin      , "Test fine login"    , fineLogin)
+  test(testGetUserProfile , "Test user profile"  , fineLogin)
+  test(testRenewToken     , "Test renew token")
   test(testInvalidateToken, "Test invalidate token")
   test(testInvalidToken   , "Test invalid token")
   print()

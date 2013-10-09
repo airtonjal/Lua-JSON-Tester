@@ -8,7 +8,7 @@ local token = arg[1]
 local posts = {
   -- SERVICE               PARAMETERS
   GetUserProfile = token,
-  --RenewToken  = token,
+  RenewToken  = token,
   --InvalidateToken = token,
 }
 
@@ -18,7 +18,7 @@ function test()
   -- Invoke services with POST requests
   for service, data in pairs(posts) do
     printInfo("Testing " .. service:upper() .. " service with HTTPS")
-    requestAndPrint(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
+    requestAndPrint(SERVER, PORT, PROTOCOL, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
   end
 end
 

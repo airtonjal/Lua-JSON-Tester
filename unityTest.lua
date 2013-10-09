@@ -56,13 +56,14 @@ local internalAssertType = function(p1, typeStr, level)
   error("Assertion failed", level)
 end
 
-checkError = function(err, ErrorCode, ErrorName)
+checkError = function(err, ErrorDesc)
   internalAssertType(err, "table", 2)
-  internalAssertType(ErrorCode, "number", 2)
-  internalAssertType(ErrorName, "string", 2)
+  internalAssertType(ErrorDesc, "table", 2)
+  internalAssertType(ErrorDesc.ErrorCode, "number", 2)
+  internalAssertType(ErrorDesc.ErrorName, "string", 2)
 
-  internalAssertEquals(err.ErrorCode, ErrorCode, 2)
-  internalAssertEquals(err.ErrorName, ErrorName, 2) 
+  internalAssertEquals(err.ErrorCode, ErrorDesc.ErrorCode, 2)
+  internalAssertEquals(err.ErrorName, ErrorDesc.ErrorName, 2) 
 end
 
 assertEquals = function(p1, p2)

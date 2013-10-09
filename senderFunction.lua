@@ -1,3 +1,4 @@
+require "config"
 local oo = require "loop.base"
 local json = require "json"
 --require "args"
@@ -59,6 +60,12 @@ function requestJSON(url, port, protocol, method, path, data)
   -- Json contents is in the last line
   local lastLine = split[#split] 
   return json.decode(lastLine), lastLine
+end
+
+-- This is just a simpler function to avoid using requestJSON
+function postJSON(path, data)
+  -- These request parameters come from config.lua
+  return requestJSON(SERVER, PORT, PROTOCOL, METHOD.POST, path, data)
 end
 
 function requestAndPrint(url, port, protocol, method, outputFormat, path, inputFormat, data, time)

@@ -6,7 +6,8 @@ require "utils"
 local posts = {
   -- SERVICE               PARAMETERS
   --Login = {  User = "quality_1", Password = "V1rtu@L..."  },
-  Login = {  User = "quality_1", Password = "qubit2600"  },
+  Login = { User = "quality_1", Password = "qubit2600"  },
+  --Login = { User = "erick.moura", Password="t0rr35m0"},
   --Login = {  User = "quality_1", Password = "qubit2600"  },
 }
 
@@ -18,7 +19,7 @@ function test()
   --  printInfo("Testing " .. service:upper() .. " service with HTTP")
   --  request(serverAddress, 4430,  PROTOCOLS.HTTP,  METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
     printInfo("Testing " .. service:upper() .. " service with HTTPS")
-    requestAndPrint(serverAddress, httpsPort, PROTOCOLS.HTTPS, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
+    requestAndPrint(SERVER, PORT, PROTOCOL, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
   end
 end
 
