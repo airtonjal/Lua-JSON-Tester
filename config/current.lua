@@ -25,14 +25,5 @@ DEFAULT_PORTS = {
 --[[ Change the values bellow according to your server configuration ]]--
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
-
-verbose       = true  -- Just local output
-
-httpPort      = 4530  -- Outgoing http port
-httpsPort     = 45301 -- Outgoing https port
---httpsPort     = 443
-
-SERVER        = "10.0.40.182"
---SERVER        = "10.0.40.11"
-PROTOCOL      = PROTOCOLS.HTTPS
-PORT          = httpsPort
+--require "config.local"
+require "config.lab"

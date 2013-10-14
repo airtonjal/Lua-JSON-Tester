@@ -1,4 +1,4 @@
-require "config"
+require "config.current"
 require "senderFunction"
 require "utils"
 

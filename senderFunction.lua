@@ -1,4 +1,4 @@
-require "config"
+require "config.current"
 local oo = require "loop.base"
 local json = require "json"
 --require "args"

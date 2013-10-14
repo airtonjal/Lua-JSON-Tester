@@ -1,6 +1,7 @@
 local testsTotal  = 0
 local testsOK     = 0
 local testsFailed = 0
+local time        = os.time()
 
 local function formatSourceLine(debugInfo)
   if not debugInfo then return ""
@@ -99,7 +100,8 @@ test = function(func, name, ...)
 end
 
 testsSummary = function()
-  print(testsTotal .. " tests run", testsOK .. " tests were SUCCESSFULL", testsFailed .. " tests FAILED")
+--  print("\nTotal time: " .. os.date("!%X", (os.time() - time)))
+  print("Total time: " .. os.date("!%X", (os.time() - time)), testsTotal .. " tests run", testsOK .. " tests were SUCCESSFULL", testsFailed .. " tests FAILED" )
 end
 
 

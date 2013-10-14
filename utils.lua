@@ -1,3 +1,5 @@
+require "config.current"
+
 -- Use here only an even value
 local LINE_SIZE = 79
 local printHead = function() print("|" .. string.rep("¯", LINE_SIZE - 2) .. "|\n|" .. string.rep(" ", LINE_SIZE - 2) .. "|") end
@@ -15,5 +17,10 @@ splitLines = function(str)
   local function helper(line) table.insert(t, line) return "" end
   helper(str:gsub("(.-)\r?\n", helper))
   return t
+end
+
+
+serverInfo = function()
+  print(string.format("Server %s\tProtocol %s\tPort %s", SERVER, PROTOCOL, PORT))
 end
 

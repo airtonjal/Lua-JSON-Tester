@@ -17,7 +17,10 @@ local path = "WFS/Service/Impl/Authentication.svc/%s"
 
 local function checkDefaultProfile(Profile)
   assertNotNil(Profile)
+  assertType(Profile, "table")
   
+  if Profile.Login == "quality_4" then return end
+
   assertNotNil(Profile.Mail)
   assertNotNil(Profile.Login)
   assertNotNil(Profile.Name)
@@ -25,10 +28,6 @@ local function checkDefaultProfile(Profile)
   assertType(Profile.Mail , "string")
   assertType(Profile.Login, "string")
   assertType(Profile.Name , "string")
-
-  assertEquals("daniel.hart@wradar.com.br", Profile.Mail)
-  assertEquals("quality_1"                , Profile.Login)
-  assertEquals("Quality Projid 1"         , Profile.Name)
 end
 
 local function checkToken(Token)
@@ -96,22 +95,36 @@ function testInvalidToken()
   checkError(resultData, InvalidTokenError)
 end
 
+local time = os.time()
+
 for i = 1, arg[1] or 1 do
   local wrongPass = { User = "quality_1",    Password = "qubit26000" } 
   local wrongUser = { User = "quality_1aaa", Password = "qubit2600"  } 
-  local fineLogin = { User = "quality_1",    Password = "qubit2600"  }
+  local fineLogin = { User = "quality_",    Password = "qubit2600"  }
   
-  serverInfo()
   print()
   test(testWrongLogin     , "Test wrong password", wrongPass, AuthenticationError)
   test(testWrongLogin     , "Test wrong username", wrongUser, AuthenticationError)
-  test(testFineLogin      , "Test fine login"    , fineLogin)
+  
+  -- This is a map indicating invalid quality_* users
+  local invalid_users = { [8] = 1, [9] = 1, [12] = 1, [13] = 1, [14] = 1, [16] = 1, [17] = 1, [18] = 1, [20] = 1, [23] = 1, [24] = 1, [25] = 1}
+
+  for i = 1, 31 do
+    -- users that does not exist AHHAHAH
+    if not invalid_users[i] then
+      local login = { User = fineLogin.User .. tostring(i), Password = fineLogin.Password }
+      test(testFineLogin      , "Test fine login"    , login)
+    end
+  end
+
   test(testGetUserProfile , "Test user profile"  , fineLogin)
   test(testRenewToken     , "Test renew token")
   test(testInvalidateToken, "Test invalidate token")
   test(testInvalidToken   , "Test invalid token")
-  serverInfo()
-  print()
-  testsSummary()
 end
+
+serverInfo()
+print()
+testsSummary()
+
 
