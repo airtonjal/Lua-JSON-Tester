@@ -9,6 +9,7 @@ verbose       = true  -- Just local output
 httpPort      = 8080  -- Outgoing http port
 httpsPort     = 443 -- Outgoing https port
 
-SERVER        = "10.8.0.214"
+--SERVER        = "10.8.0.214"
+SERVER        = "HWS01DEV"
 PROTOCOL      = PROTOCOLS.HTTP
 PORT          = httpPort
