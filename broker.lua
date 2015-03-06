@@ -1,4 +1,4 @@
-require "config.current"
+--require "config.current"
 local oo = require "loop.base"
 local json = require "json"
 
@@ -18,18 +18,16 @@ DEFAULT_PORTS = {
   http  = 80,       https = 443
 }
 
-Broker = oo.class{
-  server   = nil,
-  port     = nil,
-  protocol = nil
-}
+Broker = oo.class{}
 
 function Broker:__init(server, port, protocol)
-  return oo.rawnew(self, {
-    server   = server,
-    port     = port,
-    protocol = protocol
-  })
+  local self = oo.rawnew(self, {})
+ 
+  self.server   = server
+  self.port     = port
+  self.protocol = protocol
+
+  return self
 end
 
 local function formatURL(url, port, protocol, path)
@@ -81,24 +79,24 @@ function Broker:postJSON(path, data)
   return requestJSON(SERVER, PORT, PROTOCOL, METHOD.POST, path, data)
 end
 
-function Broker:requestAndPrint(url, port, protocol, method, outputFormat, path, inputFormat, data, time)
-  if (url == nil) then
-    error("\'url\' parameter cannot be nil")
+function Broker:requestAndPrint(method, outputFormat, path, inputFormat, data, time)
+  if (self.server == nil) then
+    error("\'server\' parameter cannot be nil")
   end
     
   -- Default function values
-  method       = method       or METHOD.POST
-  inputFormat  = inputFormat  or CONTENTS.JSON
-  outputFormat = outputFormat or CONTENTS.JSON
-  protocol     = protocol     or PROTOCOLS.HTTP
-  port         = port         or DEFAULT_PORTS[protocol]
+  method       = method         or METHOD.POST
+  inputFormat  = inputFormat    or CONTENTS.JSON
+  outputFormat = outputFormat   or CONTENTS.JSON
+  protocol     = self.protocol  or PROTOCOLS.HTTP
+  port         = self.port      or DEFAULT_PORTS[protocol]
 
-  local body = encodeData(data, inputFormat)
+  local body = self:encodeData(data, inputFormat)
   
   local curl = "curl -k -i -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
   curl = curl:format(method, outputFormat, inputFormat)
  
-  url = formatURL(url, port, protocol, path)
+  url = formatURL(self.server, port, protocol, path)
 
   if (method == "GET") then
     curl = curl .. " \'" .. url .. "\'"
