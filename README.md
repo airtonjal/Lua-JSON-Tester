@@ -10,9 +10,9 @@ Configuration
 Dependencies:
   - [JSON4Lua](http://json.luaforge.net/)
   - [Loop](http://loop.luaforge.net/)
-  - Curl
+  - [Curl](http://curl.haxx.se/)
   
-I recommend using [LuaRocks](http://json.luaforge.net) to install Lua packages. The scripts/install.sh file is a sample of how to install these dependencies
+I recommend using [LuaRocks](http://luarocks.org) to install Lua packages. The scripts/install.sh file is a sample of how to install these dependencies
 
 Tips:
   - If you are having problems using the tool, try setting the DEBUG flag to true on the config.lua file
