@@ -1,6 +1,7 @@
 --require "config.current"
 local oo = require "loop.base"
 local json = require "json"
+local log = require "log"
 
 METHOD = {
   POST = "POST",    GET = "GET",     PUT = "PUT",   DELETE = "DELETE"
@@ -22,11 +23,25 @@ Broker = oo.class{}
 
 function Broker:__init(server, port, protocol)
   local self = oo.rawnew(self, {})
+
+  log.info("Creating broker object")
+
+  if (type(server)   ~= "string") then 
+    error("\'server\' parameter must be a string, but instead a "   .. type(server)   .. " was provided")
+  end
+  if (port == nil) then 
+    log.warn("\'port\' parameter must be a number, but instead a "  .. type(port)     .. " was provided. Using default http port " .. tostring(DEFAULT_PORTS.http))
+  end
+  if (type(protocol) ~= "string") then
+    log.warn("\'protocol\' parameter must be a string, but instead a " .. type(protocol) .. " was provided. Using default " .. PROTOCOLS.HTTP .. " protocol")
+  end
  
   self.server   = server
-  self.port     = port
-  self.protocol = protocol
+  self.port     = port or DEFAULT_PORTS.http
+  self.protocol = protocol or PROTOCOLS.HTTP
 
+  log.debug("\'protocol\' is\' " .. tostring(protocol) .. "\t\'port\' is\' " .. tostring(port) .. "\t\'server\' is\' " .. tostring(server))
+  
   return self
 end
 
@@ -35,24 +50,26 @@ local function formatURL(url, port, protocol, path)
   return urlTemplate:format(protocol, url, port, path)
 end
 
-function Broker:requestJSON(url, port, protocol, method, path, data)
-  if (url == nil) then
-    error("\'url\' parameter cannot be nil")
-  end
-    
+
+-- This is just a simpler function to avoid using requestJSON
+function Broker:postJSON(path, data)
+  -- These request parameters come from config.lua
+  return requestJSON(SERVER, PORT, PROTOCOL, METHOD.POST, path, data)
+end
+
+
+function Broker:request(method, path, data, inputFormat, outputFormat)
   -- Default function values
   method       = method       or METHOD.POST
-  inputFormat  = CONTENTS.JSON
-  outputFormat = CONTENTS.JSON
-  protocol     = protocol     or PROTOCOLS.HTTP
-  port         = port         or DEFAULT_PORTS[protocol]
+  inputFormat  = inputFormat  or CONTENTS.JSON
+  outputFormat = outputFormat or CONTENTS.JSON
 
-  local body = encodeData(data, inputFormat)
+  local body = self:encodeData(data, inputFormat)
   
-  local curl = "curl -k -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
+  local curl = "curl -k -i -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
   curl = curl:format(method, outputFormat, inputFormat)
  
-  url = formatURL(url, port, protocol, path)
+  url = formatURL(self.server, self.port, self.protocol, path)
 
   if (method == "GET") then
     curl = curl .. " \'" .. url .. "\'"
@@ -67,48 +84,22 @@ function Broker:requestJSON(url, port, protocol, method, path, data)
   local result = handle:read("*a")  
   local split = splitLines(result)
   handle:close()
+
+  -- Looks for the start of the json. Very ugly, but it works :)
+  local output = result:sub(result:find("\n{"), #result)
  
   -- Json contents is in the last line
   local lastLine = split[#split] 
-  return json.decode(lastLine), lastLine
+  return json.decode(output), output
 end
 
--- This is just a simpler function to avoid using requestJSON
-function Broker:postJSON(path, data)
-  -- These request parameters come from config.lua
-  return requestJSON(SERVER, PORT, PROTOCOL, METHOD.POST, path, data)
+function Broker:requestJSON(method, path, data)
+  self:request(method, path, data)
 end
 
 function Broker:requestAndPrint(method, outputFormat, path, inputFormat, data, time)
-  if (self.server == nil) then
-    error("\'server\' parameter cannot be nil")
-  end
-    
-  -- Default function values
-  method       = method         or METHOD.POST
-  inputFormat  = inputFormat    or CONTENTS.JSON
-  outputFormat = outputFormat   or CONTENTS.JSON
-  protocol     = self.protocol  or PROTOCOLS.HTTP
-  port         = self.port      or DEFAULT_PORTS[protocol]
-
-  local body = self:encodeData(data, inputFormat)
-  
-  local curl = "curl -k -i -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
-  curl = curl:format(method, outputFormat, inputFormat)
- 
-  url = formatURL(self.server, port, protocol, path)
-
-  if (method == "GET") then
-    curl = curl .. " \'" .. url .. "\'"
-  else
-    curl = curl .. " -d \'" .. body .. "\' \'" .. url .. "\'"
-  end
-
-  if (time) then curl = "time " .. curl end
-
-  print("\n", curl, "\n")
-
-  os.execute(curl)
+  local _, responseStr = self:request(method, path, data, inputFormat, outputFormat)
+  print("\n", responseStr)
 end
 
 function Broker:encodeData(data, contents)

@@ -15,7 +15,7 @@ function test()
   --  printInfo("Testing " .. service:upper() .. " service with HTTP")
   --  request(serverAddress, 4430,  PROTOCOLS.HTTP,  METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
     printInfo("Testing " .. imsi .. " service with HTTP")
-    requestAndPrint(SERVER, PORT, PROTOCOL, METHOD.GET, CONTENTS.JSON, path:format(imsi), CONTENTS.JSON, nil, true)
+    requestAndPrint("localhost", PORT, PROTOCOL, METHOD.GET, CONTENTS.JSON, path:format(imsi), CONTENTS.JSON, nil, true)
   end
 end
 

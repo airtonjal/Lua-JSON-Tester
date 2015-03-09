@@ -14,7 +14,6 @@ luarocks install luasec
 luarocks install json4lua
 luarocks install loop
 
-
 cd ..
 
 echo "Removing LuaRocks temp dir"

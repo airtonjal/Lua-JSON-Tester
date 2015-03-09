@@ -1,12 +1,16 @@
 require "config.current"
 require "broker"
 require "utils"
+require "log".level = "debug"
 
 verbose = true
 
 local broker = Broker ("ampere.poc.wr01.wradar.br", 9200, PROTOCOLS.HTTP)
+--local broker = Broker ("ampere.poc.wr01.wradar.br")
 
-broker:requestAndPrint(METHOD.GET, CONTENTS.JSON, "", CONTENTS.JSON, {})
+--broker:requestAndPrint(METHOD.GET, CONTENTS.JSON, "", CONTENTS.JSON, {})
+
+broker:requestJSON(METHOD.GET, CONTENTS.JSON, "", CONTENTS.JSON, {})
 
 -- Request table. Each key is a method name and each value is the object to convert to json data on the POST request
 local posts = {
@@ -35,7 +39,7 @@ local tacs = {
   }
 }
 
-local path = "%s/_search?pretty"
+local path = "%s/_search"
 -- Invoke services with POST requests
 for service, data in pairs(tacs) do
   printInfo("Testing " .. service:upper() .. " with HTTP")

@@ -24,3 +24,4 @@ serverInfo = function()
   print(string.format("Server %s\tProtocol %s\tPort %s", SERVER, PROTOCOL, PORT))
 end
 
+print(package.path)
