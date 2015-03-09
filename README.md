@@ -19,7 +19,7 @@ Usage
 
 To make a request do the following
 
-```
+```lua
 require "broker"
 local broker = Broker ("wradar.br")
 broker:requestAndPrint(METHOD.GET, "", "")
@@ -27,7 +27,7 @@ broker:requestAndPrint(METHOD.GET, "", "")
 
 This will make a GET http (default protocol) request in port 80 (default port), printing the result to the console. To specify more parameters:
 
-```
+```lua
 require "broker"
 local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
 broker:requestAndPrint(METHOD.GET, "", "")
