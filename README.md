@@ -31,14 +31,14 @@ If you want to acquire the result programmatically, use the requestJSON method:
 
 ```lua
 require "broker"
-local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
+local broker = Broker ("www.wradar.br", 8080, PROTOCOLS.HTTPS)
 broker:requestJSON(
   METHOD.POST, 
   "user/byAge",
   [[{"username":"airton","password":"mydummypassword"}]])
 ```
 
-Notice that now I am using POST method, specifying a url path and a json to be sent as the http body.
+Notice that now I am using POST method, specifying a url path and a json to be sent as the http body. The request will now be prompted to https://www.wradar.br:8080/user/byAge
 
 Tips:
   - If you are having problems using the tool, try setting the log level to debug:
