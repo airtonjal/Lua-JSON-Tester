@@ -22,22 +22,23 @@ To make a request do the following:
 ```lua
 require "broker"
 local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
-broker:requestAndPrint(METHOD.GET, "", "")
+broker:requestAndPrint(METHOD.GET)
 ```
 
 This will make a GET http request in port 8080, printing the result to the console.
 
 If you want to acquire the result programmatically, use the requestJSON method:
 
-
 ```lua
 require "broker"
 local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
 broker:requestJSON(
-  METHOD.GET, 
+  METHOD.POST, 
   "user/byAge",
   [[{"username":"airton","password":"mydummypassword"}]])
 ```
+
+Notice that now I am using POST method, specifying a url path and a json to be sent as the http body.
 
 Tips:
   - If you are having problems using the tool, try setting the DEBUG flag to true on the config.lua file

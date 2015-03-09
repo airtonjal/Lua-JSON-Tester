@@ -7,7 +7,8 @@ verbose = true
 
 local broker = Broker ("ampere.poc.wr01.wradar.br", 9200, PROTOCOLS.HTTP)
 
-broker:requestAndPrint(METHOD.GET, "", "pchrindex")
+--broker:requestAndPrint(METHOD.GET, "", "pchrindex")
+broker:requestAndPrint(METHOD.GET)
 
 -- Request table. Each key is a method name and each value is the object to convert to json data on the POST request
 local posts = {
