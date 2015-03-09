@@ -41,4 +41,8 @@ broker:requestJSON(
 Notice that now I am using POST method, specifying a url path and a json to be sent as the http body.
 
 Tips:
-  - If you are having problems using the tool, try setting the DEBUG flag to true on the config.lua file
+  - If you are having problems using the tool, try setting the log level to debug:
+
+```lua
+require "log".level = "debug"
+```

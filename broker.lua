@@ -1,4 +1,3 @@
---require "config.current"
 local oo = require "loop.base"
 local json = require "json"
 local log = require "log"
