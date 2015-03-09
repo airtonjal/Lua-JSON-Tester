@@ -51,13 +51,6 @@ local function formatURL(url, port, protocol, path)
 end
 
 
--- This is just a simpler function to avoid using requestJSON
-function Broker:postJSON(path, data)
-  -- These request parameters come from config.lua
-  return requestJSON(SERVER, PORT, PROTOCOL, METHOD.POST, path, data)
-end
-
-
 function Broker:request(method, path, data, inputFormat, outputFormat)
   -- Default function values
   method       = method       or METHOD.POST

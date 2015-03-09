@@ -17,20 +17,23 @@ I recommend using [LuaRocks](http://luarocks.org) to install Lua packages. The [
 Usage
 =====
 
-To make a request do the following
-
-```lua
-require "broker"
-local broker = Broker ("wradar.br")
-broker:requestAndPrint(METHOD.GET, "", "")
-```
-
-This will make a GET http (default protocol) request in port 80 (default port), printing the result to the console. To specify more parameters:
+To make a request do the following:
 
 ```lua
 require "broker"
 local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
 broker:requestAndPrint(METHOD.GET, "", "")
+```
+
+This will make a GET http request in port 8080, printing the result to the console.
+
+If you want to acquire the result programmatically, use the requestJSON method:
+
+
+```lua
+require "broker"
+local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
+broker:requestJSON(METHOD.GET, "user/byAge", "{\"username\":\"airton\",\"password\":\"mydummypassword\"}")
 ```
 
 Tips:
