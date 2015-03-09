@@ -11,7 +11,7 @@ broker:requestAndPrint(METHOD.GET, CONTENTS.JSON, "", CONTENTS.JSON, {})
 -- Request table. Each key is a method name and each value is the object to convert to json data on the POST request
 local posts = {
   -- SERVICE               PARAMETERS
-  pchr = { 
+  pchrindex = { 
     query = { 
       bool = { 
         must = { 
@@ -25,8 +25,8 @@ local posts = {
 }
 
 local tacs = {
-  pchr = {
-    size = 0,
+  pchrindex = {
+    size = 1,
     filter = {
       exists = {
         field = "Call.Phone.tac"
