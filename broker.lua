@@ -64,6 +64,7 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   inputFormat  = inputFormat  or CONTENTS.JSON
   outputFormat = outputFormat or CONTENTS.JSON
 
+  log.debug("Encoding user provided data")
   local body = self:encodeData(data, inputFormat)
   
   local curl = "curl -k -i -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
@@ -78,18 +79,17 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   end
 
   curl = curl .. " 2>&1"
+  
+  log.debug("curl request command string is: " .. curl)
 
-  --print("\n", curl, "\n")
   local handle = io.popen(curl)
   local result = handle:read("*a")  
-  local split = splitLines(result)
+  --local split = splitLines(result)
   handle:close()
 
   -- Looks for the start of the json. Very ugly, but it works :)
   local output = result:sub(result:find("\n{"), #result)
  
-  -- Json contents is in the last line
-  local lastLine = split[#split] 
   return json.decode(output), output
 end
 
