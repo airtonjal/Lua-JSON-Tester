@@ -33,7 +33,10 @@ If you want to acquire the result programmatically, use the requestJSON method:
 ```lua
 require "broker"
 local broker = Broker ("wradar.br", 8080, PROTOCOLS.HTTP)
-broker:requestJSON(METHOD.GET, "user/byAge", "{\"username\":\"airton\",\"password\":\"mydummypassword\"}")
+broker:requestJSON(
+  METHOD.GET, 
+  "user/byAge",
+  [[{"username":"airton","password":"mydummypassword"}]])
 ```
 
 Tips:
