@@ -1,3 +1,5 @@
+local log = require "log"
+
 local testsTotal  = 0
 local testsOK     = 0
 local testsFailed = 0
@@ -22,7 +24,7 @@ local function formatSourceLine(debugInfo)
   end
 end
 
-local function log(...)
+--[[local function log(...)
   if (verbose) then 
     io.write("\t", formatSourceLine(debug.getinfo(4)), "\t")
     for _, v in ipairs({...}) do
@@ -30,29 +32,29 @@ local function log(...)
     end 
     print() 
   end
-end
+end]]--
 
 local internalAssertEquals = function(p1, p2, level)
 --  for k, v in pairs (debug.getinfo(3)) do print(k, v) end
-  log("AssertEquals", p1, p2) 
+  log.debug("AssertEquals", p1, p2) 
   if p1 == p2 then return true end
   error("Assertion failed", level)
 end
 
 local internalAssertNotEquals = function(p1, p2, level)
-  log("AssertNotEquals", p1, p2)
+  log.debug("AssertNotEquals", p1, p2)
   if p1 ~= p2 then return true end
   error("Assertion failed", level)
 end
 
 local internalAssertNotNil = function(p1, level)
-  log("AssertNotNil", p1)
+  log.debug("AssertNotNil", p1)
   if p1 ~= nil then return true end
   error("Assertion failed", level)
 end
 
 local internalAssertType = function(p1, typeStr, level)
-  log("AssertType", p1, typeStr)
+  log.debug("AssertType", p1, typeStr)
   if type(p1) == typeStr then return true end
   error("Assertion failed", level)
 end
@@ -89,10 +91,10 @@ test = function(func, name, ...)
   if verbose then print() end
   if status then
     testsOK = testsOK + 1
-    print("Test " .. testsTotal .. " SUCCESS\t\t\"" .. name .. "\"")
+    log.info("Test " .. testsTotal .. " SUCCESS\t\t\"" .. name .. "\"")
   else
     testsFailed = testsFailed + 1
-    print("Test " .. testsTotal .. " FAILED\t\t\"" .. name .. "\"\n", res)
+    log.info("Test " .. testsTotal .. " FAILED\t\t\"" .. name .. "\"\n", res)
   end
   if verbose then print() end
 
@@ -101,7 +103,7 @@ end
 
 testsSummary = function()
 --  print("\nTotal time: " .. os.date("!%X", (os.time() - time)))
-  print("Total time: " .. os.date("!%X", (os.time() - time)), testsTotal .. " tests run", testsOK .. " tests were SUCCESSFULL", testsFailed .. " tests FAILED" )
+  log.info("Total time: " .. os.date("!%X", (os.time() - time)), testsTotal .. " tests run", testsOK .. " tests were SUCCESSFULL", testsFailed .. " tests FAILED" )
 end
 
 

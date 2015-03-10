@@ -1,6 +1,17 @@
 require "config.current"
-require "senderFunction"
-require "utils"
+require "broker"
+require "utils.print"
+require "log".level = "debug"
+
+httpPort      = 8080  -- Outgoing http port
+httpsPort     = 443 -- Outgoing https port
+
+--SERVER        = "10.8.0.214"
+SERVER        = "HWS01DEV"
+PROTOCOL      = PROTOCOLS.HTTP
+PORT          = httpPort
+
+local broker = Broker(SERVER, PORT, PROTOCOL)
 
 local token = arg[1]
 
@@ -18,7 +29,7 @@ function test()
   -- Invoke services with POST requests
   for service, data in pairs(posts) do
     printInfo("Testing " .. service:upper() .. " service with HTTPS")
-    requestAndPrint(SERVER, PORT, PROTOCOL, METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
+    broker:requestAndPrint(METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data, true)
   end
 end
 

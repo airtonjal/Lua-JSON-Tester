@@ -10,7 +10,7 @@ local printBody = function(serviceName)
   print("|" .. string.rep(" ", size) .. serviceName .. string.rep(" ", LINE_SIZE - 1 - size - serviceName:len() - odd) .. "|")
 end
 
-printInfo = function(serviceName) print("\n\n") printHead() printBody(serviceName) printTail() end
+printInfo = function(serviceName) print("\n") printHead() printBody(serviceName) printTail() end
 
 splitLines = function(str)
   local t = {}

@@ -1,7 +1,17 @@
-require "config.current"
-require "senderFunction"
-require "utils"
+require "broker"
+require "utils.print"
 require "unityTest"
+require "log".level = "debug"
+
+httpPort      = 8080  -- Outgoing http port
+httpsPort     = 443 -- Outgoing https port
+
+--SERVER        = "10.8.0.214"
+SERVER        = "HWS01DEV"
+PROTOCOL      = PROTOCOLS.HTTP
+PORT          = httpPort
+
+local broker = Broker (SERVER, PORT, PROTOCOL)
 
 -- Just a syntatic sugar
 local POST = METHOD.POST
@@ -42,12 +52,12 @@ end
 
 --[[ This test should receive an exception from the server ]]--
 function testWrongLogin(data, err)
-  local resultData, resultStr = postJSON(path:format("Login"), data)
+  local resultData, resultStr = broker:postJSON(path:format("Login"), data)
   local test = checkError(resultData, err)
 end
 
 function testFineLogin(data)
-  local resultData, resultStr = postJSON(path:format("Login"), data)
+  local resultData, resultStr = broker:postJSON(path:format("Login"), data)
   
   assertType(resultData, "table")
 
@@ -61,37 +71,37 @@ function testFineLogin(data)
 end
 
 function testGetUserProfile()
-  local resultData, resultStr = postJSON(path:format("GetUserProfile"), token)
+  local resultData, resultStr = broker:postJSON(path:format("GetUserProfile"), token)
   assertType(resultData, "table")
   checkDefaultProfile(resultData)
 end
 
 function testRenewToken()
-  local resultData, resultStr = postJSON(path:format("RenewToken"), token)
+  local resultData, resultStr = broker:postJSON(path:format("RenewToken"), token)
   
   checkToken(resultData)
   
   -- Sending an invalid token to be renewed
-  resultData, resultStr = postJSON(path:format("RenewToken"), "cadcadcadvavad")
+  resultData, resultStr = broker:postJSON(path:format("RenewToken"), "cadcadcadvavad")
   checkError(resultData, InvalidTokenError)
 end
 
 
 function testInvalidateToken()
-  local resultData, resultStr = postJSON(path:format("InvalidateToken"), token)
+  local resultData, resultStr = broker:postJSON(path:format("InvalidateToken"), token)
   
   assertType(resultData, "boolean")
   assertEquals(resultData, true)
 end
 
 function testInvalidToken()
-  local resultData, resultStr = postJSON(path:format("GetUserProfile"), token)
+  local resultData, resultStr = broker:postJSON(path:format("GetUserProfile"), token)
   checkError(resultData, InvalidTokenError)
   
-  resultData, resultStr = postJSON(path:format("InvalidateToken"), token)
+  resultData, resultStr = broker:postJSON(path:format("InvalidateToken"), token)
   checkError(resultData, InvalidTokenError)
 
-  resultData, resultStr = postJSON(path:format("RenewToken"), token)
+  resultData, resultStr = broker:postJSON(path:format("RenewToken"), token)
   checkError(resultData, InvalidTokenError)
 end
 

@@ -1,12 +1,11 @@
 --require "config.current"
 require "broker"
-require "utils"
+require "utils.print"
 require "log".level = "debug"
-
-verbose = true
 
 local broker = Broker ("ampere.poc.wr01.wradar.br", 9200, PROTOCOLS.HTTP)
 
+printInfo("Testing root request with HTTP")
 --broker:requestAndPrint(METHOD.GET, "", "pchrindex")
 broker:requestAndPrint(METHOD.GET)
 

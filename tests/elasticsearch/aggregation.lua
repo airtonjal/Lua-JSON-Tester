@@ -1,6 +1,6 @@
 require "config.current"
 require "broker"
-require "utils"
+require "utils.print"
 
 verbose = true
 

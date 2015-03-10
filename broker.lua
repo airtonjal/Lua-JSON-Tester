@@ -85,6 +85,14 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   return json.decode(output), output
 end
 
+function Broker:postJSON(path, data)
+  return self:request(METHOD.POST, path, data)
+end
+
+function Broker:getJSON(path, data)
+  return self:request(METHOD.GET, path, data)
+end
+
 function Broker:requestJSON(method, path, data)
   self:request(method, path, data)
 end
