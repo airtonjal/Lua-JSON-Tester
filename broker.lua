@@ -23,7 +23,7 @@ Broker = oo.class{}
 function Broker:__init(server, port, protocol)
   local self = oo.rawnew(self, {})
 
-  log.info("Creating broker object")
+  log.debug("Creating broker object")
 
   if (type(server)   ~= "string") then 
     error("\'server\' parameter must be a string, but instead a "   .. type(server)   .. " was provided")
@@ -78,9 +78,12 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   local result = handle:read("*a")  
   --local split = splitLines(result)
   handle:close()
+  --print(result)
 
   -- Looks for the start of the json. Very ugly, but it works :)
   local output = result:sub(result:find("\n{"), #result)
+
+  --return output
  
   return json.decode(output), output
 end
@@ -97,7 +100,7 @@ function Broker:requestJSON(method, path, data)
   self:request(method, path, data)
 end
 
-function Broker:requestAndPrint(method, outputFormat, path, inputFormat, data, time)
+function Broker:requestAndPrint(method, path, data, time, inputFormat, outputFormat)
   local _, responseStr = self:request(method, path, data, inputFormat, outputFormat)
   print("\n", responseStr)
 end

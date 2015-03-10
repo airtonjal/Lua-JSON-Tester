@@ -34,11 +34,42 @@ local tacs = {
   }
 }
 
+
+
+local aggregations = {
+  pchrindex = {
+    query = {
+      filtered = {
+        filter = {
+          bool = {
+            must = {
+              {
+                range = {
+                  ["Call.StarTime"] = {
+                    gte = 1406911815539,
+                    lte = 1406911815541
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    aggs = {
+      avg_duration = {
+        avg = {
+          field = "Call.CallDuration"
+        }
+      }
+    }
+  }
+}
+
 local path = "%s/_search?pretty"
--- Invoke services with POST requests
-for service, data in pairs(tacs) do
-  printInfo("Testing " .. service:upper() .. " with HTTP")
+for service, data in pairs(aggregations) do
+  printInfo("Average call duration request")
   broker:requestAndPrint(METHOD.POST, CONTENTS.JSON, path:format(service), CONTENTS.JSON, data)
 end
 
-print()
+
