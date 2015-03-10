@@ -11,9 +11,7 @@ local pchrsearch = {
   size = 0,
   aggs = {
     min_time = {
-      min = {
-        field = "Call.StartTime"
-      }
+      min = { field = "Call.StartTime" }
     }
   }
 }
@@ -25,9 +23,7 @@ local pchrsearch = {
   size = 0,
   aggs = {
     max_time = {
-      max = {
-        field = "Call.StartTime"
-      }
+      max = { field = "Call.StartTime" }
     }
   }
 }

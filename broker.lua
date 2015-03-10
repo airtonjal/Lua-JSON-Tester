@@ -55,7 +55,7 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   method       = method       or METHOD.POST
   inputFormat  = inputFormat  or CONTENTS.JSON
   outputFormat = outputFormat or CONTENTS.JSON
-
+  
   log.debug("Encoding user provided data")
   local body = self:encodeData(data, inputFormat)
   
@@ -105,17 +105,17 @@ function Broker:requestAndPrint(method, path, data, time, inputFormat, outputFor
   print("\n", responseStr)
 end
 
-function Broker:encodeData(data, contents)
-  if (contents == nil) then
-  elseif (contents == CONTENTS.XML) then
+function Broker:encodeData(data, format)
+  if (format == nil) then
+  elseif (format == CONTENTS.XML) then
     error("XML input format not yet supported")
-  elseif (contents == CONTENTS.JSON) then
+  elseif (format == CONTENTS.JSON) then
     -- TODO: Temporary solution, assuming that server will receive only one parameter
     --for k, v in pairs(data) do
     --  return json.encode(v)
     --end
     return json.encode(data)
-  elseif (contents == CONTENTS.QUERY) then
+  elseif (format == CONTENTS.QUERY) then
     local queryString = ""
     for k, v in pairs(data) do
       queryString = queryString .. k .. "=" .. v .. "&"
@@ -123,7 +123,7 @@ function Broker:encodeData(data, contents)
     -- Removes trailing '&' char
     return queryString:sub(1, queryString:len() - 1)
   else
-    error("Parameter \"contents\" not recognized")
+    error("Parameter \"format\" not recognized")
   end
 end
 
