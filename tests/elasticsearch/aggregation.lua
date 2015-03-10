@@ -1,4 +1,3 @@
-require "config.current"
 require "broker"
 require "utils.print"
 
