@@ -55,7 +55,23 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   method       = method       or METHOD.POST
   inputFormat  = inputFormat  or CONTENTS.JSON
   outputFormat = outputFormat or CONTENTS.JSON
-  
+
+  if (method ~= METHOD.GET and method ~= METHOD.POST) then 
+    error("\'method\' parameter type should be either \"" .. METHOD.POST .. "\" or \"" .. METHOD.GET .. "\"") 
+  end
+  if (inputFormat ~= CONTENTS.JSON and inputFormat ~= CONTENTS.XML and inputFormat ~= CONTENTS.QUERY) then
+    error("\'inputFormat\' parameter type should be either \"" .. CONTENTS.JSON .. "\" or \"" .. CONTENTS.POST .. "\" or \"" .. CONTENTS.QUERY .. "\"") 
+  end
+  if (outputFormat ~= CONTENTS.JSON and outputFormat ~= CONTENTS.XML and outputFormat ~= CONTENTS.QUERY) then
+    error("\'outputFormat\' parameter type should be either \"" .. CONTENTS.JSON .. "\" or \"" .. CONTENTS.POST .. "\" or \"" .. CONTENTS.QUERY .. "\"") 
+  end
+  if (type(data) ~= "table" and type(data) ~= "nil") then
+    error("\'data\' parameter should be a table, but instead a " .. type(data) .. " was provided")
+  end
+  if (type(path) ~= "string" and type(path) ~= "nil") then
+    error("\'path\' parameter should be a string, but instead a " .. type(path) .. " was provided")
+  end
+
   log.debug("Encoding user provided data")
   local body = self:encodeData(data, inputFormat)
   

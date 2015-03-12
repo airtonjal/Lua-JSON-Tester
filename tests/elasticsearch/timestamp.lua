@@ -1,32 +1,20 @@
--- Acquires the minimum and maximum call timestamps
+-- Acquires the minimum and maximum call startime values
 
-require "broker"
-require "utils.print"
-require "log".level = "info"
+require "tests.elasticsearch.config"
 
-local path = "pchrindex/_search?pretty"
-local broker = Broker ("ampere.poc.wr01.wradar.br", 9200, PROTOCOLS.HTTP)
-
-local pchrsearch = {
+local pchrindex = {
   size = 0,
   aggs = {
-    min_time = {
-      min = { field = "Call.StartTime" }
+    ts = {
+      stats = { field = "Call.StartTime" }
     }
   }
 }
 
-local data = broker:request(METHOD.POST, path, pchrsearch)
-print("\nMinimum call start time " .. data.aggregations.min_time.value)
+function timestamps()
+  local data = broker:request(METHOD.POST, path, pchrindex)
+  return data.aggregations.ts.min, data.aggregations.ts.max
+end
+local min, max = timestamps()
+print(min, max)
 
-local pchrsearch = {
-  size = 0,
-  aggs = {
-    max_time = {
-      max = { field = "Call.StartTime" }
-    }
-  }
-}
-
-local data = broker:request(METHOD.POST, path, pchrsearch)
-print("Maximum call start time " .. data.aggregations.max_time.value)
