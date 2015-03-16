@@ -15,4 +15,4 @@ function callsWithTac()
   return data.hits.total
 end
 
-print(callsWithTac())
+print("Calls with tac: " .. callsWithTac())

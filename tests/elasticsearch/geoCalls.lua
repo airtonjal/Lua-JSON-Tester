@@ -14,4 +14,5 @@ function geoCalls()
   return data.hits.total
 end
 
-print(geoCalls())
+print("Calls with geolocation: " .. geoCalls())
+

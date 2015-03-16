@@ -16,5 +16,5 @@ function timestamps()
   return data.aggregations.ts.min, data.aggregations.ts.max
 end
 local min, max = timestamps()
-print(min, max)
+print("Minimum start time: " .. min, "Maximum start time: " .. max)
 
