@@ -56,8 +56,9 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   inputFormat  = inputFormat  or CONTENTS.JSON
   outputFormat = outputFormat or CONTENTS.JSON
 
-  if (method ~= METHOD.GET and method ~= METHOD.POST) then 
-    error("\'method\' parameter type should be either \"" .. METHOD.POST .. "\" or \"" .. METHOD.GET .. "\"") 
+  if (method ~= METHOD.GET and method ~= METHOD.POST and method ~= METHOD.PUT and method ~= METHOD.DELETE) then 
+    error("\'method\' parameter type should be either \"" 
+      .. METHOD.POST .. "\", \"" .. METHOD.GET .. "\", \"" .. METHOD.DELETE .. "\", " .. METHOD.PUT .. "\"") 
   end
   if (inputFormat ~= CONTENTS.JSON and inputFormat ~= CONTENTS.XML and inputFormat ~= CONTENTS.QUERY) then
     error("\'inputFormat\' parameter type should be either \"" .. CONTENTS.JSON .. "\" or \"" .. CONTENTS.POST .. "\" or \"" .. CONTENTS.QUERY .. "\"") 
@@ -118,7 +119,7 @@ end
 
 function Broker:requestAndPrint(method, path, data, time, inputFormat, outputFormat)
   local _, responseStr = self:request(method, path, data, inputFormat, outputFormat)
-  print("\n", responseStr)
+  print(responseStr .. "\n")
 end
 
 function Broker:encodeData(data, format)

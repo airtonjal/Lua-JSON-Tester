@@ -19,4 +19,4 @@ function averageCallDuration()
   return data.aggregations.avg_duration.value
 end
 
-print(averageCallDuration())
+print("Average call duration (milliseconds): " .. averageCallDuration())
