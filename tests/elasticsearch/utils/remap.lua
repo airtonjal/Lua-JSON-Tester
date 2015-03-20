@@ -73,8 +73,8 @@ local function remap_index(index, index_type, fields)
   end
 end
 
-local pchr_index = "pchrindex"
-local enum_fields = { "Call.CallSetupType", "Call.Phone.phoneModel", "Call.RrcRelErrorCause" }
-local index_type = "pchr"
-remap_index(pchr_index, index_type, enum_fields)
+local my_index = "myindex"
+local enum_fields = { "field1", "obj.fieldA", "a.b.c" }
+local index_type = "mytype"
+remap_index(my_index, index_type, enum_fields)
 

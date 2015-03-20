@@ -2,6 +2,5 @@
 
 require "tests.elasticsearch.config"
 
-local index = "pchrindex"
-broker:requestAndPrint(METHOD.GET, index .. "/_mapping")
+broker:requestAndPrint(METHOD.GET, "myindex/_mapping")
 

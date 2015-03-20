@@ -1,5 +1,3 @@
--- Dropped call by setup type
-
 require "tests.elasticsearch.config"
 
 local pchrindex = {
@@ -13,18 +11,18 @@ local pchrindex = {
   },
   aggs = {
     setup_type = {
-      terms = { field = "Call.CallSetupType.raw" }
+      terms = { field = "Call.Phone.phoneModel.raw" }
     }
   }
 }
 
-function dropByCallType()
+function dropByPhone()
   local data = broker:request(METHOD.POST, path, pchrindex)
   local result = {}
   for k, v in ipairs(data.aggregations.setup_type.buckets) do
-    table.insert(result, { setup_type = v.key, count = v.doc_count })
+    table.insert(result, { phone = v.key, count = v.doc_count })
   end
   return result
 end
 
-for i, drop in pairs(dropByCallType()) do print(i .. "\tCall setup type: \"" .. drop.setup_type .. "\"\tcount: " .. drop.count) end
+for i, drop in pairs(dropByPhone()) do print(i .. "\tPhone model: \"" .. drop.phone .. "\"\tcount: " .. drop.count) end
