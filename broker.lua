@@ -1,6 +1,7 @@
 local oo = require "loop.base"
 local json = require "json"
 local log = require "log"
+local socket = require "socket"
 
 METHOD = {
   POST = "POST",    GET = "GET",     PUT = "PUT",   DELETE = "DELETE"
@@ -91,18 +92,18 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   
   log.debug("curl request command string is: " .. curl)
 
+  local start_time = socket.gettime()
   local handle = io.popen(curl)
-  local result = handle:read("*a")  
-  --local split = splitLines(result)
+  local result = handle:read("*a") 
+
   handle:close()
-  --print(result)
+  
+  local took = 1000 * (socket.gettime() - start_time)
 
   -- Looks for the start of the json. Very ugly, but it works :)
   local output = result:sub(result:find("\n{"), #result)
 
-  --return output
- 
-  return json.decode(output), output
+  return json.decode(output), output, took
 end
 
 function Broker:postJSON(path, data)
