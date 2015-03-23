@@ -13,6 +13,7 @@ echo "Installing Lua dependencies"
 luarocks install luasec
 luarocks install json4lua
 luarocks install loop
+luarocks install luasocket
 
 cd ..
 
