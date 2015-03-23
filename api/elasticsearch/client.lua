@@ -22,6 +22,11 @@ function ElasticsearchBroker:__init(server, port, protocol)
   return self
 end
 
+local count_path = "%s/_count"
+function ElasticsearchBroker:count(index)
+  return self.broker:request(METHOD.GET, count_path:format(index))
+end
+
 function ElasticsearchBroker:dispatch(request)
   return self.broker:request(METHOD.POST, request_path:format(request.index), request.data)
 end
