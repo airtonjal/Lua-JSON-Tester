@@ -28,6 +28,9 @@ function ElasticsearchBroker:count(index)
 end
 
 function ElasticsearchBroker:dispatch(request)
+  if (#request.data.aggs == 0) then
+    request.data.aggs = nil
+  end
   return self.broker:request(METHOD.POST, request_path:format(request.index), request.data)
 end
 
