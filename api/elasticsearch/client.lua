@@ -28,7 +28,9 @@ function ElasticsearchBroker:count(index)
 end
 
 function ElasticsearchBroker:dispatch(request)
-  if (#request.data.aggs == 0) then
+  local has_aggs = false
+  for k, v in pairs(request.data.aggs) do has_aggs = true; break  end
+  if (not has_aggs) then
     request.data.aggs = nil
   end
   return self.broker:request(METHOD.POST, request_path:format(request.index), request.data)
