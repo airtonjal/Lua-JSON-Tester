@@ -75,7 +75,6 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   end
 
   log.debug("Encoding user provided data")
-  local body = self:encodeData(data, inputFormat)
   
   local curl = "curl -k -i -X %s -H \'Accept:application/%s\' -H \'Content-Type:application/%s\' "
   curl = curl:format(method, outputFormat, inputFormat)
@@ -85,7 +84,12 @@ function Broker:request(method, path, data, inputFormat, outputFormat)
   if (method == "GET") then
     curl = curl .. " \'" .. url .. "\'"
   else
-    curl = curl .. " -d \'" .. body .. "\' \'" .. url .. "\'"
+    if (type(data) == "nil") then
+      curl = curl .. " \'" .. url .. "\'"
+    else
+      local body = self:encodeData(data, inputFormat)
+      curl = curl .. " -d \'" .. body .. "\' \'" .. url .. "\'"
+    end
   end
 
   curl = curl .. " 2>&1"
